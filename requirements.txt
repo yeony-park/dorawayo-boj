@@ -1,0 +1,9 @@
+# Web
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+
+# Crawler
+requests
+beautifulsoup4
