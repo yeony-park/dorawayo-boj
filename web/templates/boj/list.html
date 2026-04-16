@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>돌아와요 BOJ</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/boj.css">
+</head>
+<body>
+    <div class="boj-wrap">
+        <div class="boj-header">
+            <h1>돌아와요 BOJ</h1>
+            <div class="total">총 {{ total_count }}문제</div>
+        </div>
+
+        <div class="boj-toolbar">
+            <form method="get" action="/dorawayo-boj" class="search-form">
+                <input type="text" name="q" value="{{ query }}" placeholder="문제 번호 또는 제목">
+                <input type="hidden" name="tier" value="{{ tier }}">
+                <input type="hidden" name="tag" value="{{ tag }}">
+                <button type="submit">검색</button>
+            </form>
+
+            <form method="get" action="/dorawayo-boj">
+                <input type="hidden" name="q" value="{{ query }}">
+                <input type="hidden" name="tag" value="{{ tag }}">
+                <select name="tier" class="filter-select" onchange="this.form.submit()">
+                    <option value="">티어 전체</option>
+                    {% for t in tier_groups %}
+                        <option value="{{ t }}" {% if tier == t %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <table class="problem-table">
+            <thead>
+                <tr>
+                    <th style="width:90px">번호</th>
+                    <th>제목</th>
+                    <th style="width:130px">난이도</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for problem in problems %}
+                <tr>
+                    <td>{{ problem.problem_id }}</td>
+                    <td>
+                        <a href="/dorawayo-boj/{{ problem.problem_id }}">{{ problem.title }}</a>
+                    </td>
+                    <td>
+                        {% if problem.level_name %}
+                            {% set tier_class = problem.level_name.split(' ')[0] %}
+                            <span class="tier-badge tier-{{ tier_class }}">{{ problem.level_name }}</span>
+                        {% else %}
+                            <span class="tier-badge tier-Unrated">Unrated</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="/dorawayo-boj?page={{ page - 1 }}&q={{ query }}&tier={{ tier }}&tag={{ tag }}">← 이전</a>
+            {% endif %}
+            <span>{{ page }} / {{ total_pages }}</span>
+            {% if page < total_pages %}
+                <a href="/dorawayo-boj?page={{ page + 1 }}&q={{ query }}&tier={{ tier }}&tag={{ tag }}">다음 →</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

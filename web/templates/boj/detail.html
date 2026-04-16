@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ problem.problem_id }}번 - {{ problem.title }}</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/boj.css">
+</head>
+<body>
+    <div class="boj-wrap">
+        <div class="boj-header">
+            <a href="/dorawayo-boj" class="back-link">← 목록으로</a>
+            <h1>{{ problem.problem_id }}. {{ problem.title }}</h1>
+            {% if problem.level_name %}
+                <span class="tier-badge">{{ problem.level_name }}</span>
+            {% endif %}
+        </div>
+
+        <div class="boj-body">
+
+            {% if problem.time_limit or problem.mem_limit %}
+            <div class="meta-info">
+                {% if problem.time_limit %}
+                    <span><strong>시간 제한</strong> &nbsp;{{ problem.time_limit }}</span>
+                {% endif %}
+                {% if problem.mem_limit %}
+                    <span><strong>메모리 제한</strong> &nbsp;{{ problem.mem_limit }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if problem.description %}
+            <div class="section">
+                <h2>문제</h2>
+                <p>{{ problem.description }}</p>
+            </div>
+            {% endif %}
+
+            {% if problem.input_desc %}
+            <div class="section">
+                <h2>입력</h2>
+                <p>{{ problem.input_desc }}</p>
+            </div>
+            {% endif %}
+
+            {% if problem.output_desc %}
+            <div class="section">
+                <h2>출력</h2>
+                <p>{{ problem.output_desc }}</p>
+            </div>
+            {% endif %}
+
+            {% if problem.examples %}
+            <div class="section">
+                <h2>예제</h2>
+                <div class="examples-grid">
+                    {% for ex in problem.examples %}
+                    <div class="example-box">
+                        <div class="example-box-header">
+                            예제 입력 {{ loop.index }}
+                            <button class="copy-btn" onclick="copyText(this)">복사</button>
+                        </div>
+                        <div class="example-content">{{ ex.input }}</div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-box-header">
+                            예제 출력 {{ loop.index }}
+                            <button class="copy-btn" onclick="copyText(this)">복사</button>
+                        </div>
+                        <div class="example-content">{{ ex.output }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if problem.tags %}
+            <div class="section">
+                <h2>태그</h2>
+                <div class="tags-wrap">
+                    {% for tag in problem.tags %}
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if problem.source %}
+            <div class="section">
+                <h2>출처</h2>
+                <p>{{ problem.source }}</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        function copyText(btn) {
+            const content = btn.closest('.example-box-header')
+                              .nextElementSibling.innerText;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(content).then(() => flash(btn));
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = content;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                flash(btn);
+            }
+        }
+
+        function flash(btn) {
+            const orig = btn.textContent;
+            btn.textContent = '완료!';
+            setTimeout(() => btn.textContent = orig, 1500);
+        }
+    </script>
+</body>
+</html>
